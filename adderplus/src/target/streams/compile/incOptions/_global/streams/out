@@ -1,0 +1,26 @@
+[0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = /home/souheil/chipyard/generators/sk/adderplus/src/target/scala-2.13/classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusImp.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusBB.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusIO.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlus.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusImp.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusBB.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusIO.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlus.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusImp.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlus.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusBB.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	AdderPlusIO.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithAdderPlus.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: /home/souheil/chipyard/generators/sk/adderplus/src/target/scala-2.13/classes.bak[0m

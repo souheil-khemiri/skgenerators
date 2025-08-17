@@ -1,0 +1,19 @@
+[0m[[0m[0mdebug[0m] [0m[0mPackaging /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/simpleadder_2.13-1.6.jar ...[0m
+[0m[[0m[0mdebug[0m] [0m[0mInput file mappings:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder/SimpleAdderModule$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder/SimpleAdderModule$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder/SimpleAdderModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder/SimpleAdderModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder/SimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder/SimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder/WithSimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder/WithSimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder/SimpleAdderAcceleratorModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder/SimpleAdderAcceleratorModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder/WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder/WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	simpleadder/WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	  /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes/simpleadder/WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone packaging.[0m

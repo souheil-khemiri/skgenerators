@@ -1,0 +1,26 @@
+[0m[[0m[0mdebug[0m] [0m[0mCreated transactional ClassFileManager with tempDir = /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes.bak[0m
+[0m[[0m[0mdebug[0m] [0m[0mAbout to delete class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderModule$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderAcceleratorModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mWe backup class files:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderModule$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderAcceleratorModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRegistering generated classes:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderModule$$anon$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	SimpleAdderAcceleratorModule.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0m	WithSimpleAdderAccelerator$$anonfun$$lessinit$greater$1$$anonfun$apply$1.class[0m
+[0m[[0m[0mdebug[0m] [0m[0mRemoving the temporary directory used for backing up class files: /home/souheil/chipyard/generators/sk/simpleadder/src/target/scala-2.13/classes.bak[0m
