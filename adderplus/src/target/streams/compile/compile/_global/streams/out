@@ -1,4 +1,0 @@
-[0m[[0m[33mwarn[0m] [0m[0m/home/souheil/chipyard/generators/sk/adderplus/src/main/scala/AdderPlus.scala:12:8: Importing from firrtl is deprecated as of Chisel's 3.6.0 release.[0m
-[0m[[0m[33mwarn[0m] [0m[0mimport firrtl.PrimOps.Add[0m
-[0m[[0m[33mwarn[0m] [0m[0m       ^[0m
-[0m[[0m[33mwarn[0m] [0m[0mone warning found[0m

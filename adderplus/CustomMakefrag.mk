@@ -1,1 +1,0 @@
-EXTRA_SIM_SOURCES += $(base_dir)/generators/AdderPlus/src/main/resources/vsrc/rtl/AdderPlus.v
