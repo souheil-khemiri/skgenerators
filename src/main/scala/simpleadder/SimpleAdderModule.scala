@@ -1,4 +1,4 @@
-package simpleadder
+package skgenerators
 import chisel3._
 import chisel3.util._
 

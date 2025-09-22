@@ -1,5 +1,5 @@
 //started compiling this piece of shit meaningless tiny code with 22 errrors
-package adderPlus
+package skgenerators
 //import chipyard._//contains RocketConfig
 import chisel3._//contains blackbox
 //import chipyard.config._//contains RockerConfig => this is probably wrong

@@ -1,4 +1,4 @@
-package simpleadder
+package skgenerators
 import chisel3._
 import chisel3.util._
 import freechips.rocketchip.tile._
@@ -14,47 +14,10 @@ class SimpleAdderAccelerator(opcodes: OpcodeSet)(implicit p : Parameters) extend
 class SimpleAdderAcceleratorModule(outer : SimpleAdderAccelerator) extends LazyRoCCModuleImp(outer) with HasCoreParameters{
     val simpleAdderModuleInst = Module(new SimpleAdderModule)
 
-    // val regIoRespValid = RegInit(false.B)
-    // val result = Reg(UInt(32.W))
-    // val counter = RegInit(0.U(32.W))
-    // val io_cmd_ready_reg = RegInit(false.B)
-    // val io_cmd_bits_inst_rd_reg = RegInit(0.U(5.W))
-    // counter := counter + 1.U
-
-    // // io.cmd.ready := true.B
-    // // io.resp.valid := false.B
-    // //command channel
-    // simpleAdderModuleInst.io.input_a := io.cmd.bits.rs1
-    // simpleAdderModuleInst.io.input_b := io.cmd.bits.rs2
-
-    // //response channel
-    // io.resp.bits.data := result //simpleAdderModuleInst.io.result
-    // io.resp.bits.rd   := io_cmd_bits_inst_rd_reg
-
-    // //ctrl
-    // io.cmd.ready := io_cmd_ready_reg //0
-    // //io.cmd.ready := !regIoRespValid //1
-    // io.resp.valid := regIoRespValid//0
-
-    // when( io.cmd.valid && io.cmd.ready ){  //1 1
-    //     printf("io.cmd.valid && io.cmd.ready")
-    //     printf("counter = %d\n", counter)
-    //     result := simpleAdderModuleInst.io.result
-    //     regIoRespValid := true.B  //0  => io.cmd.ready = 0 and io.resp.valid = 1
-    //     io_cmd_bits_inst_rd_reg := io.cmd.bits.inst.rd
-    // }
-    // when(io.resp.valid && io.resp.ready){// 1 
-    //     printf("io.resp.valid && io.resp.ready")
-    //     printf("counter = %d\n", counter)
-    //     regIoRespValid := false.B
-    // }
-    // io.interrupt := false.B // no interrupts
-
-
     // State machine implementation
     val s_idle :: s_compute :: s_resp :: Nil = Enum(3)
     val state = RegInit(s_idle)
-    //Accelerator input and output registers
+    //Accelerator input(to store rs1 and rs2) and output registers
     val result = Reg(UInt(xLen.W))
     val input_a_reg = Reg(UInt(xLen.W))
     val input_b_reg = Reg(UInt(xLen.W))
@@ -70,7 +33,7 @@ class SimpleAdderAcceleratorModule(outer : SimpleAdderAccelerator) extends LazyR
     //state machine control
     io.resp.valid := (state === s_resp)
     io.cmd.ready := (state === s_idle)
-    
+
     when(io.cmd.fire){
         state := s_compute
         rd_reg := io.cmd.bits.inst.rd
@@ -93,4 +56,65 @@ class WithSimpleAdderAccelerator extends Config((site, here, up) => {
     case BuildRoCC => Seq((p:Parameters) => LazyModule(
         new SimpleAdderAccelerator(OpcodeSet.custom0)(p)))
 })
+
+
+//Simple Adder with parameters
+
+class AdderParamAccelerator(opcodes: OpcodeSet, val param : Int)(implicit p : Parameters) extends LazyRoCC(opcodes){
+    override lazy val module = new  AdderParamAcceleratorImp(this)
+}
+class AdderParamAcceleratorImp(outer: AdderParamAccelerator) extends LazyRoCCModuleImp(outer) with HasCoreParameters{
+    val simpleAdderModuleInst = Module(new SimpleAdderModule)
+    
+    //io.cmd.bits.inst.rd register
+    val rdReg = Reg(UInt(xLen.W))
+    //rs1 and rs2 reg
+    val inputAReg = Reg(UInt(xLen.W))
+    val inputBReg = Reg(UInt(xLen.W))
+
+
+    simpleAdderModuleInst.io.input_a := inputAReg
+    simpleAdderModuleInst.io.input_b := inputBReg
+    
+    //result reg
+    val resultReg = Reg(UInt(xLen.W))
+    //response
+    io.resp.bits.rd := rdReg
+    io.resp.bits.data := resultReg
+    //states
+    val s_idle = 0.U(2.W)
+    val s_compute = 1.U(2.W)
+    val s_resp = 2.U(2.W)
+    //state register, and state control
+    val stateReg : UInt = RegInit(s_idle)
+    io.cmd.ready := (stateReg === s_idle)
+    io.resp.valid := (stateReg===s_resp)
+    io.busy := (stateReg =/= s_idle)
+    when(io.cmd.fire){
+        rdReg:= io.cmd.bits.inst.rd
+        inputAReg:=io.cmd.bits.rs1
+        inputBReg:=io.cmd.bits.rs2
+        stateReg:=s_compute
+    }
+    when(stateReg===s_compute){
+        resultReg:= simpleAdderModuleInst.io.result + outer.param.asUInt
+        stateReg:= s_resp
+    }
+    when(io.resp.fire){
+        stateReg:=s_idle
+    }
+
+}
+
+class WithAdderParamAccelerator(param : Int) extends Config((site, here, up) => {
+    case BuildRoCC => Seq((p:Parameters) => LazyModule(
+        new AdderParamAccelerator(OpcodeSet.custom0, param )(p)))
+}
+
+)
+
+
+
+
+
 
