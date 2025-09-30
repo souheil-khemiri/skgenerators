@@ -51,12 +51,14 @@ initial
     #40;
     init = 0;
     start = 1;
+    #10;
+    start = 0;
     #100;
     return_current_count = 1;
-    // #10;
-    // return_current_count=0;
+    /#10;
+    return_current_count=0;
     #100;
-    reset = 0;
+    reset = 1;
     #50;
     end
 endmodule
