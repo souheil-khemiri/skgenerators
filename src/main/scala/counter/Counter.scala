@@ -6,6 +6,7 @@ import org.chipsalliance.cde.config._
 import org.chipsalliance.diplomacy.lazymodule._
 import org.chipsalliance.cde.config._
 import chisel3.experimental.IntParam
+import freechips.rocketchip.regmapper.RRTest0Map.re
 
 class CounterIO(val xLen : Int) extends Bundle{
  val  clk = Input(Clock()) 
@@ -16,6 +17,8 @@ class CounterIO(val xLen : Int) extends Bundle{
  val  return_current_count = Input(Bool())
  val  current_count = Output(UInt(xLen.W))
  val  debug_out = Output(UInt(xLen.W))
+ val  count_valid = Output(Bool())
+ val count_valid_fsm = Output(Bool())
 }
 
 class counter(val xLen : Int) extends BlackBox(
@@ -25,8 +28,11 @@ class counter(val xLen : Int) extends BlackBox(
     addResource("/vsrc/counter.v")
 }
 
-class CounterAcc(opcodes: OpcodeSet) (implicit p: Parameters) extends LazyRoCC(opcodes){
-    override lazy val module = new CounterAccImp(this)
+class CounterAcc(opcodes: OpcodeSet, version: String = "v1") (implicit p: Parameters) extends LazyRoCC(opcodes){
+    override lazy val module = version match {
+        case "v1" => new CounterAccImp(this)
+        case "v2" => new CounterAccImpV2(this)
+    }
 }
 
 class CounterAccImp(outer : CounterAcc) (implicit p: Parameters) extends LazyRoCCModuleImp(outer) with HasCoreParameters {
@@ -109,21 +115,82 @@ class CounterAccImp(outer : CounterAcc) (implicit p: Parameters) extends LazyRoC
         counterInst.io.return_current_count := false.B       
         stateReg := s_idle
     }
-
-    //reset counterInst reset signal at boot for 4 clock cycles
-//     val resetCounter = RegInit(0.U(3.W))
-//     val resetDone = RegInit(false.B)
-//     when (resetCounter =/= 4.U) {
-//         resetCounter := resetCounter + 1.U
-//         counterInst.io.reset := true.B
-//     } .otherwise {
-//         counterInst.io.reset := false.B
-//         resetDone := true.B
-//     }
  }
 
-class WithCounterAcc() extends Config((site, here, up) => {
+
+/*
+V2
+Updated version of the counter.
+Getting rid of unecessary states.
+Cleaner and more understandable.
+*/
+
+class CounterAccImpV2(outer : CounterAcc) (implicit p: Parameters) extends LazyRoCCModuleImp(outer) with HasCoreParameters{
+    val counterInst = Module(new counter(xLen))
+
+    val rd_reg = Reg(UInt(5.W))
+    //states to control io.cmd.ready
+    val s_idle = 0.U
+    val s_busy = 1.U
+    val state = RegInit(s_idle) // 0: idle, 1: busy
+
+    val funct = io.cmd.bits.inst.funct
+    val init = (0.U===funct)
+    val start = (1.U===funct)
+    val return_current_count = (2.U===funct)
+    val count_valid = counterInst.io.count_valid
+
+    counterInst.io.clk := clock
+    counterInst.io.reset := reset 
+
+    /*setting all initial counter.io.{start, init, return_current_count} to 0
+    because simulation gave the following error:
+    [476645000] %Error: TestHarness.sv:99: Assertion failed in TOP.TestDriver.testHarness: Assertion failed: *** FAILED *** (exit code =          1)
+
+    at SimTSI.scala:21 assert(!error, "*** FAILED *** (exit code = %%d)\n", exit >> 1.U)
+
+    %Error: /home/souheil/chipyard/sims/verilator/generated-src/chipyard.harness.TestHarness.CounterRocketConfig/gen-collateral/TestHarness.sv:99: Verilog $stop
+    Solution: set them inside cmd.fire --> dns (did not solve)
+    checked V1 agin : works fine
+    Solution 2: problem with the count_valid signal being always high =>  io.resp.valid always high
+
+
+    */
+    counterInst.io.start := false.B//start
+    counterInst.io.init := false.B//init
+    counterInst.io.return_current_count := false.B//return_current_count
+    counterInst.io.init_val := io.cmd.bits.rs1
+    io.resp.bits.data := counterInst.io.current_count
+    io.resp.bits.rd := rd_reg
+
+    io.cmd.ready := (state === s_idle)
+    io.busy := (state =/= s_idle)
+    io.resp.valid := count_valid
+    
+
+    when(io.cmd.fire){
+        when(init){
+            counterInst.io.init := true.B
+        }
+        .elsewhen(start){
+            counterInst.io.start:= true.B
+        }
+        .elsewhen(return_current_count){
+        counterInst.io.return_current_count := true.B
+        rd_reg := io.cmd.bits.inst.rd
+        state := s_busy  
+        }
+    }
+    when(io.resp.fire){
+        state := s_idle
+    }
+
+} 
+
+
+
+class WithCounterAcc(version: String) extends Config((site, here, up) => {
     case BuildRoCC => Seq((p:Parameters) => LazyModule(
-        new CounterAcc(OpcodeSet.custom0)(p)))
+        new CounterAcc(OpcodeSet.custom0, version)(p)))
 }
 )

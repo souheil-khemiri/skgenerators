@@ -1,8 +1,10 @@
+#scala and tools
 target/
 *.class
 *.log
 .metals/
 .vscode/
+.scala-build/
 # ignore compilation output of ModelSim
 *.mti
 *.dat

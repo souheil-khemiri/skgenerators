@@ -8,6 +8,8 @@ reg init;
 reg return_current_count;
 wire [xLen-1 : 0] current_count;
 wire [xLen-1 : 0] debug_out;
+wire count_valid;
+wire count_valid_fsm;
 
 
 
@@ -21,7 +23,9 @@ counter #(.xLen(xLen)) dut(
     .init(init),
     .return_current_count(return_current_count),
     .current_count(current_count),
-    .debug_out(debug_out)
+    .debug_out(debug_out),
+    .count_valid(count_valid),
+    .count_valid_fsm(count_valid_fsm)
 );
 //clock generation
 //An alwyas block with no sensitivity list keeps on looping with no end
@@ -55,7 +59,7 @@ initial
     start = 0;
     #100;
     return_current_count = 1;
-    /#10;
+    #10;
     return_current_count=0;
     #100;
     reset = 1;
