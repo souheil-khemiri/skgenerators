@@ -31,7 +31,7 @@ class AdderPlusBB(val WIDTH : Int, val PLUS : Int) extends BlackBox(
         "PLUS" -> IntParam(PLUS)
     )
 ) with HasBlackBoxResource {
-  override def desiredName = "AdderPlus" // override the name of the blackbox class to martch the verilog module name
+  override def desiredName = "AdderPlus" // override the name of the blackbox class to match the verilog module name
   val io = IO(new AdderPlusIO(WIDTH, PLUS))
   addResource("/vsrc/rtl/AdderPlus.v")
 }
