@@ -70,9 +70,9 @@ test_sa_dp:
 # Usage: make test_sa_dp_delay
 test_sa_dp_delay:
 	@echo "Running Systolic Array Datapath with Programmable Delay Blocks test..."
-	$(MAKE) VERILOG_SOURCES="$(VERILOG_DIR)/systolic_array_datapath_programmable_delay_block.v $(VERILOG_DIR)/systolic_array_datapath.v $(VERILOG_DIR)/programmable_delay_block.v PE.v" \
+	$(MAKE) VERILOG_SOURCES="$(VERILOG_DIR)/systolic_array_datapath_programmable_delay_block.v $(VERILOG_DIR)/systolic_array_datapath.v $(VERILOG_DIR)/programmable_delay_block.v $(VERILOG_DIR)/PE.v" \
 	 TOPLEVEL=systolic_array_datapath_programmable_delay_block \
-	 MODULE=systolic_array_datapath_programmable_delay_block_cocotb
+	 MODULE=systolic_array_datapath_programmable_delay_block_cocotb2
 
 # Target:delay_block
 test_delay_block:

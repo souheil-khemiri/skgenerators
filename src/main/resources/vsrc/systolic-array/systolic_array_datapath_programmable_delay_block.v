@@ -10,16 +10,12 @@ module systolic_array_datapath_programmable_delay_block
     parameter   DEPTH_B= WIDTH
 ) (
     input  clk,
-    input  [HEIGHT-1:0]input_row_enable,
-    input  [WIDTH-1:0]input_col_enable,
-    input  [HEIGHT-1:0]acc_row_enable,
-    input  [WIDTH-1:0]acc_col_enable, 
+    input  [HEIGHT*WIDTH-1:0]input_enable,
+    input  [HEIGHT*WIDTH-1:0]acc_enable, 
     input  [ELEMENT_INPUT_WIDTH*HEIGHT-1:0]a_in,
     input  [ELEMENT_INPUT_WIDTH*WIDTH-1:0]b_in,
-    input  [HEIGHT-1:0]sel_row_adder_mux, // 1: sel accumulator output, 0: sel zero
-    input  [WIDTH-1:0]sel_col_adder_mux, // 1: sel accumulator output, 0: sel zero
-    input  [HEIGHT-1:0]sel_row_acc_mux, // 1: sel adder output, 0: sel c_in
-    input  [WIDTH-1:0]sel_col_acc_mux, // 1: sel adder output, 0: sel c_in
+    input  [HEIGHT*WIDTH-1:0]sel_adder_mux, // 1: sel accumulator output, 0: sel zero
+    input  [HEIGHT*WIDTH-1:0]sel_acc_mux, // 1: sel adder output, 0: sel c_in
     input  [SEL_DELAY_WIDTH_A*HEIGHT-1:0] sel_delay_a,
     input  [HEIGHT-1:0] delay_enable_a,
     input  [SEL_DELAY_WIDTH_B*WIDTH-1:0] sel_delay_b,
@@ -32,8 +28,8 @@ module systolic_array_datapath_programmable_delay_block
 wire [ELEMENT_INPUT_WIDTH*HEIGHT-1:0] a_wire;
 wire [ELEMENT_INPUT_WIDTH*WIDTH-1:0] b_wire;
 
-
-systolic_array_datapath # (
+  
+  systolic_array_datapath # (
     .HEIGHT(HEIGHT),
     .WIDTH(WIDTH),
     .ELEMENT_INPUT_WIDTH(ELEMENT_INPUT_WIDTH),
@@ -41,18 +37,14 @@ systolic_array_datapath # (
   )
   systolic_array_datapath_inst (
     .clk(clk),
-    .input_row_enable(input_row_enable),
-    .input_col_enable(input_col_enable),
-    .acc_row_enable(acc_row_enable),
-    .acc_col_enable(acc_col_enable),
+    .input_enable(input_enable),
+    .acc_enable(acc_enable),
     .a_in(a_wire),
     .b_in(b_wire),
-    .sel_row_adder_mux(sel_row_adder_mux),
-    .sel_col_adder_mux(sel_col_adder_mux),
-    .sel_row_acc_mux(sel_row_acc_mux),
-    .sel_col_acc_mux(sel_col_acc_mux),
+    .sel_adder_mux(sel_adder_mux),
+    .sel_acc_mux(sel_acc_mux),
     .c_out(c_out)
-  );    
+  );
 
   programmable_delay_block # (
     .ELEMENT_INPUT_WIDTH(ELEMENT_INPUT_WIDTH),
