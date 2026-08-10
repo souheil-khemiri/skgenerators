@@ -18,6 +18,7 @@ module control_path_SADPPDB
     input   shift_results,
     output  done_mac,
     output  done_shift_result,
+    output  reg done_reset_acc,
     output  busy,
     output  [HEIGHT*WIDTH-1:0]input_enable,
     output  [HEIGHT*WIDTH-1:0]acc_enable,
@@ -47,65 +48,68 @@ makes the code more readable.
 
 
 /*unpacking/unflattening signals*/
-wire input_enable_wire[0:HEIGHT-1][0:WIDTH-1];
-wire acc_enable_wire[0:HEIGHT-1][0:WIDTH-1];
-wire sel_adder_mux_wire[0:HEIGHT-1][0:WIDTH-1];
-wire sel_acc_mux_wire[0:HEIGHT-1][0:WIDTH-1];
-wire [SEL_DELAY_WIDTH_A-1:0] sel_delay_a_wire[0:HEIGHT-1];
-wire [SEL_DELAY_WIDTH_B-1:0] sel_delay_b_wire[0:WIDTH-1];
+reg input_enable_wire[0:HEIGHT-1][0:WIDTH-1];
+reg acc_enable_wire[0:HEIGHT-1][0:WIDTH-1];
+reg sel_adder_mux_wire[0:HEIGHT-1][0:WIDTH-1];
+reg sel_acc_mux_wire[0:HEIGHT-1][0:WIDTH-1];
+reg [SEL_DELAY_WIDTH_A-1:0] sel_delay_a_wire[0:HEIGHT-1];
+reg [SEL_DELAY_WIDTH_B-1:0] sel_delay_b_wire[0:WIDTH-1];
 
-genvar i;
-genvar j;
+genvar ii;
+genvar jj;
 generate
-    for(i=0; i<HEIGHT; i=i+1)begin : gen_ctrl_row
-        for (j=0; j<WIDTH; j=j+1 ) begin : gen_ctrl_col    
-            assign input_enable[i*WIDTH+j] = input_enable_wire[i][j];
-            assign acc_enable[i*WIDTH+j] = acc_enable_wire[i][j];
-            assign sel_adder_mux[i*WIDTH+j] = sel_adder_mux_wire[i][j];
-            assign sel_acc_mux[i*WIDTH+j] = sel_acc_mux_wire[i][j];
+    for(ii=0; ii<HEIGHT; ii=ii+1)begin : gen_ctrl_row
+        for (jj=0; jj<WIDTH; jj=jj+1 ) begin : gen_ctrl_col    
+            assign input_enable[ii*WIDTH+jj] = input_enable_wire[ii][jj];
+            assign acc_enable[ii*WIDTH+jj] = acc_enable_wire[ii][jj];
+            assign sel_adder_mux[ii*WIDTH+jj] = sel_adder_mux_wire[ii][jj];
+            assign sel_acc_mux[ii*WIDTH+jj] = sel_acc_mux_wire[ii][jj];
         end
     end
 endgenerate
 generate
-    for (i = 0;i<HEIGHT ;i=i+1 ) begin :gen_sel_delay_a
-        assign sel_delay_a[i*SEL_DELAY_WIDTH_A+:SEL_DELAY_WIDTH_A] = sel_delay_a_wire[i]
+    for (ii = 0;ii<HEIGHT ;ii=ii+1 ) begin :gen_sel_delay_a
+        assign sel_delay_a[ii*SEL_DELAY_WIDTH_A+:SEL_DELAY_WIDTH_A] = sel_delay_a_wire[ii];
     end
 endgenerate
 generate
-    for (i = 0;i<WIDTH ;i=i+1 ) begin :gen_sel_delay_b
-        sel_delay_b[i*SEL_DELAY_WIDTH_B+:SEL_DELAY_WIDTH_B] = sel_delay_a_wire[i]
+    for (ii = 0;ii<WIDTH ;ii=ii+1 ) begin :gen_sel_delay_b
+        assign sel_delay_b[ii*SEL_DELAY_WIDTH_B+:SEL_DELAY_WIDTH_B] = sel_delay_b_wire[ii];
     end
 endgenerate
 
-/*internal control signals*/
-reg done_reset_acc
-reg rese;
+/*internal control signals and params*/
+integer i,j;
+localparam RESET_CYCLES = HEIGHT;
+localparam ACC_RST_COUNTER_WIDTH =32;
+//reg done_reset_acc;
+reg [ACC_RST_COUNTER_WIDTH-1:0] acc_rst_counter;
 
 
 /*state definition*/
 localparam S_idle=3'b000;
-localparam S_rst_acc=3'b001;
-localparam S_rst_set_delays=3'b010;
+localparam S_rst=3'b001;
+localparam S_rst_acc=3'b010;
 localparam S_start_mac=3'b011;
 localparam S_get_results=3'b100;
-localparam S_rst = 3'b101;
-localparam
+
 
 reg [2:0] state, next_state;
-reg [2:0] rst_state, rst_next_state;
 
 /*state registers*/
 always @(posedge clk, posedge arst) begin
-    if(arst) state <= S_rst;
-    else state<=next_state;
+    if(arst) begin
+        state <= S_rst;
+        //...
+    end else state<=next_state;
 end
 
 /*next state logic*/
 always @(*) begin
     case (state)
-        P_rst : if(rst_state == ) next_state = idle;
-                    else next_state = S_set_delays;
-        S_ : if()
+        S_rst : if(acc_rst_counter == (RESET_CYCLES-1)) next_state = S_idle;
+                    else next_state = S_rst;
+        S_idle : if()
         
         default: next_state=idle 
     endcase
@@ -114,16 +118,48 @@ end
 
 /*internal sequential logic*/
 always @(posedge clk ,posedge arst) begin
-    if(arst) begin
-        
+    //S_rst_acc
+    if(state == S_rst || state == S_rst_acc) begin
+        for (i = 0 ; i<HEIGHT ;i=i+1 ) begin
+            for (j = 0;j<WIDTH ;j=j+1 ) begin
+                input_enable_wire[i][j]<=0;
+                acc_enable_wire[i][j]<=1;
+                sel_adder_mux_wire[i][j]<=0;
+                sel_acc_mux_wire[i][j]<=0;
+            end
+        end
+    end
+    //Set delays
+    if (state == S_rst) begin
+        for (i =0 ;i<HEIGHT ; i=i+1) begin
+            sel_delay_a_wire[i]<=i;
+        end
+        for (i =0 ;i<WIDTH ; i=i+1) begin
+            sel_delay_b_wire[i]<=i;
+        end
     end    
 end
-always @(*) begin
-    done_reset_acc = (state==S_rst_acc) && 
+// acc reset counter
+always @(posedge clk , posedge arst) begin
+    if(arst || reset_acc ) begin
+        acc_rst_counter <= ACC_RST_COUNTER_WIDTH'd0;
+    end else if (state == S_rst || state == S_rst_acc) begin
+        acc_rst_counter <= acc_rst_counter + ACC_RST_COUNTER_WIDTH'd1;
+    end else begin
+        acc_rst_counter <= ACC_RST_COUNTER_WIDTH'd0;
+    end
+    
 end
 
 /*output logic*/
-
+always @(posedge clk or posedge arst) begin
+  if (arst) begin
+    done_reset_acc <= 1'b0;
+  end else begin
+    done_reset_acc <= (state == S_rst || state == S_rst_acc) &&
+                      (acc_rst_counter == (RESET_CYCLES-1));
+  end
+end
 
     
 endmodule
